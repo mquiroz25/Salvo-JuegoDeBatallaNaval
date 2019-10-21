@@ -1,11 +1,14 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
@@ -23,6 +26,15 @@ public class GamePlayer {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
     private Player player;
+
+
+
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    private  Set<Salvo> salvoes;
+
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    private  Set<Ship> ships;
+
 
     public GamePlayer(Game game,Player player){
         this.game=game;
@@ -66,14 +78,38 @@ public class GamePlayer {
         this.player = player;
     }
 
+    public Set<Ship> getShips() {
+        return ships;
+    }
+
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
+
+    public Set<Salvo> getSalvoes() {
+        return salvoes;
+    }
+
+    public void setSalvoes(Set<Salvo> salvoes) {
+        this.salvoes = salvoes;
+    }
+
+
+
+
 
 
     Map<String, Object> makeGamePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
-        dto.put("player", this.player.makePlayerDTO());
+        dto.put("player", this.getPlayer().makePlayerDTO());
+
+      /*  dto.put("salvoes",this.getSalvoes()
+                .stream()
+                .map(salvo -> salvo.makeSalvoDTO())
+                .collect(Collectors.toList()));*/
         return dto;
-    }
+}
 
 
 }

@@ -4,10 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -67,12 +64,12 @@ public Long getId() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("created", this.getCreationDate());
-         dto.put("gamePlayers",this.getGamePlayerSet()
-              .stream()
-              .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
+        dto.put("gamePlayers",this.getGamePlayerSet()
+                .stream()
+                .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
 	            .collect(Collectors.toList()));
 
-      return dto;
+                 return dto;
     }
 
 }
