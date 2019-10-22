@@ -4,16 +4,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-
 
 @Entity
 public class Game {
@@ -22,24 +17,28 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
+
     private LocalDateTime creationDate;
+
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     private  Set<GamePlayer> gamePlayerSet;
 
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
+    private  Set<Score> scores;
 
 
-public Game(Long horas){
-    this.creationDate=LocalDateTime.now().plusHours(horas);
-}
+    //constructores
+    public Game(Long horas){
+        this.creationDate=LocalDateTime.now().plusHours(horas);
+    }
 
-public Game(){}
+    public Game(){}
 
 
-
-//GETTER AND SETTERS
-public Long getId() {
-    return id;
-}
+    //GETTER AND SETTERS
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -61,18 +60,36 @@ public Long getId() {
         this.gamePlayerSet = gamePlayerSet;
     }
 
+    public Set<Score> getScores() {
+        return scores;
+    }
 
-    ///////////
-  public   Map<String, Object> makeGameDTO() {
+    public void setScores(Set<Score> scores) {
+        this.scores = scores;
+    }
+
+
+
+    //////////////////////////////////////////////////
+    public   Map<String, Object> makeGameDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("created", this.getCreationDate());
-         dto.put("gamePlayers",this.getGamePlayerSet()
-              .stream()
-              .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
-	            .collect(Collectors.toList()));
-
-      return dto;
+        dto.put("gamePlayers",this.getGamePlayerSet()
+                .stream()
+                .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
+                .collect(Collectors.toList()));
+        dto.put("scores",this.getScores()
+                .stream()
+        .map(score -> score.makeScoreDTO())
+        .collect(Collectors.toList()));
+        return dto;
     }
+
+
+
+
+
+
 
 }
