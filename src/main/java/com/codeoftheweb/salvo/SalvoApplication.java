@@ -47,8 +47,9 @@ public class SalvoApplication {
 			// save a couple of Players
 			Player player1=new Player("JackBauer@gmail.com", passwordEncoder().encode("24"));
 			Player player2=new Player("Chloe O'Brian ",passwordEncoder().encode("42"));
-			Player player3=new Player( "Kim Bauer",passwordEncoder().encode("kb"));
+			Player player3=new Player( "KimBauer@gmail.com",passwordEncoder().encode("kb"));
 			Player player4=new Player( "Tony Almeida",passwordEncoder().encode("mole"));
+
 
 			playerRepository.save(player1);
 			playerRepository.save(player2);
@@ -287,16 +288,19 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
                 http.authorizeRequests()
-                        .antMatchers("/h2-console/**").permitAll()
-                        .antMatchers("/api/games").permitAll()
                         .antMatchers("/api/game_view/**").hasAuthority("USER")
-                          .antMatchers("/web/**").permitAll();
+                        .antMatchers("/h2-console/**").permitAll()
+                       .antMatchers("/api/games").permitAll()
+                        .antMatchers("/web/**").permitAll();
+
+
                 http.formLogin()
                         .usernameParameter("name")
                         .passwordParameter("pwd")
                         .loginPage("/api/login");
                 http.logout().logoutUrl("/api/logout");
-http.headers().frameOptions().disable();
+
+                http.headers().frameOptions().disable();
 
                 // turn off checking for CSRF tokens
                 http.csrf().disable();
