@@ -21,7 +21,7 @@ public class Game {
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
-    private  Set<GamePlayer> gamePlayerSet;
+    private  Set<GamePlayer> gamePlayers;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     private  Set<Score> scores;
@@ -36,6 +36,15 @@ public class Game {
 
 
     //GETTER AND SETTERS
+
+
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
     public Long getId() {
         return id;
     }
@@ -52,13 +61,6 @@ public class Game {
         this.creationDate = creationDate;
     }
 
-    public Set<GamePlayer> getGamePlayerSet() {
-        return gamePlayerSet;
-    }
-
-    public void setGamePlayerSet(Set<GamePlayer> gamePlayerSet) {
-        this.gamePlayerSet = gamePlayerSet;
-    }
 
     public Set<Score> getScores() {
         return scores;
@@ -75,7 +77,7 @@ public class Game {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("created", this.getCreationDate());
-        dto.put("gamePlayers",this.getGamePlayerSet()
+        dto.put("gamePlayers",this.getGamePlayers()
                 .stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
                 .collect(Collectors.toList()));
