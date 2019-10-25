@@ -28,6 +28,9 @@ public class SalvoController {
     @Autowired //para instanciar el objeto
     private PlayerRepository playerRepository;
 
+    @Autowired //para instanciar el objeto
+    private ShipRepository shipRepository;
+
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
@@ -51,24 +54,6 @@ public class SalvoController {
         map.put("self",new ArrayList<Object>());
         map.put("opponent",new ArrayList<Object>());
         return  map;
-    }
-    @RequestMapping("/games") ///esto tambien se llama endpoint
-    public Map<String, Object> getAll(Authentication authentication ) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-
-        if(isGuest(authentication)==true){
-            dto.put("player","Guest");
-        }
-        else
-        {
-            dto.put("player",getPlayer(authentication).makePlayerDTO() );
-        }
-        dto.put("games",gameRepository
-                .findAll()
-                .stream()
-                .map(game ->game.makeGameDTO())
-                .collect(Collectors.toList()));
-        return  dto;
     }
 
     @RequestMapping("/game_view/{nn}") ///esto tambien se llama endpoint
@@ -129,28 +114,6 @@ public class SalvoController {
     }
 
 
-    @RequestMapping(value = "/games" ,method = RequestMethod.POST) ///esto tambien se llama endpoint
-    ResponseEntity <Map <String, Object >>createGames(Authentication authentication ) {
-
-        if(isGuest(authentication)==false){
-
-            Game game =new Game();
-            gameRepository.save(game);
-            GamePlayer gamePlayer = new GamePlayer(game,getPlayer(authentication));
-            gamePlayerRepository.save(gamePlayer);
-
-            Map<String, Object> dto = new LinkedHashMap<>();
-            dto.put("gpid",gamePlayer.getId());
-            return new ResponseEntity<>(dto, HttpStatus.CREATED);
-        }
-        else
-        {
-            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
-        }
-
-    }
-
-
     @RequestMapping(value = "/game/{nn}/players" ,method = RequestMethod.POST) ///nn es el id game
     ResponseEntity <Map <String, Object >>joinGame(@PathVariable Long nn, Authentication authentication ) {
 
@@ -182,6 +145,19 @@ public class SalvoController {
 
 
 
+    @RequestMapping(value="/games/players/{gamePlayerId}/ships", method=RequestMethod.POST)
+    public ResponseEntity<String> addShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship>ships,Authentication authentication) { //request body para convertir a objeto el json enviado por post
+
+        if(isGuest(authentication)==false){
+
+            GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+            ships.forEach((ship) -> { shipRepository.save(ship); });
+
+            //gamePlayerRepository.save(gamePlayer);
+        }
+        return new ResponseEntity<>("No autorizado", HttpStatus.UNAUTHORIZED);
+    }
 
   /*  @RequestMapping("/books")
     public Map<String, Object> getAll(Authentication authentication) {
