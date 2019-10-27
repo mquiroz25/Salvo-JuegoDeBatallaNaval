@@ -62,12 +62,14 @@ public class GameController {
     }
 
 
-
+//crear juego
     @RequestMapping(value = "/games" ,method = RequestMethod.POST) ///esto tambien se llama endpoint
     ResponseEntity<Map <String, Object >> createGames(Authentication authentication ) {
 
-        if(isGuest(authentication)==false){
-
+        if(isGuest(authentication)==true) {
+            return new ResponseEntity<>(makeMap("error", "no autorizado"), HttpStatus.UNAUTHORIZED);
+        }
+        else{
             Game game =new Game();
             gameRepository.save(game);
             GamePlayer gamePlayer = new GamePlayer(game,getPlayer(authentication));
@@ -77,11 +79,7 @@ public class GameController {
             dto.put("gpid",gamePlayer.getId());
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         }
-        else
-        {
-            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
-        }
-
     }
+
 
 }

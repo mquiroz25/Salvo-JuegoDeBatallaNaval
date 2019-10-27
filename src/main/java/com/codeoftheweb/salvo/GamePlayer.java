@@ -1,24 +1,21 @@
 package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
+
     private LocalDateTime joinDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,7 +26,6 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player player;
 
-
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     private  Set<Salvo> salvoes;
 
@@ -37,16 +33,18 @@ public class GamePlayer {
     private  Set<Ship> ships;
 
 
+//constructores
+
     public GamePlayer(Game game,Player player){
         this.game=game;
         this.player=player;
         this.joinDate=LocalDateTime.now();
-
     }
+
     public GamePlayer(){}
 
-    //GETTER AND SETTER
 
+    //GETTER AND SETTER
 
     public Long getId() {
         return id;
@@ -55,6 +53,7 @@ public class GamePlayer {
     public void setId(Long id) {
         this.id = id;
     }
+
     public LocalDateTime getJoinDate() {
         return joinDate;
     }
@@ -96,21 +95,18 @@ public class GamePlayer {
     }
 
 
+    //metodos
 
-    Map<String, Object> makeGamePlayerDTO() {
+    public Map<String, Object> makeGamePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().makePlayerDTO());
-       // dto.put("player", this.getPlayer() != null ? this.getPlayer().makePlayerDTO() : null );
-
+        // dto.put("player", this.getPlayer() != null ? this.getPlayer().makePlayerDTO() : null );
       /*  dto.put("salvoes",this.getSalvoes()
                 .stream()
                 .map(salvo -> salvo.makeSalvoDTO())
                 .collect(Collectors.toList()));*/
         return dto;
-}
-
-
-
+    }
 
 }

@@ -36,8 +36,6 @@ public class Game {
 
 
     //GETTER AND SETTERS
-
-
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
@@ -45,6 +43,7 @@ public class Game {
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
+
     public Long getId() {
         return id;
     }
@@ -61,7 +60,6 @@ public class Game {
         this.creationDate = creationDate;
     }
 
-
     public Set<Score> getScores() {
         return scores;
     }
@@ -71,8 +69,8 @@ public class Game {
     }
 
 
+    //metodos
 
-    //////////////////////////////////////////////////
     public   Map<String, Object> makeGameDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
@@ -83,15 +81,9 @@ public class Game {
                 .collect(Collectors.toList()));
         dto.put("scores",this.getScores()
                 .stream()
-        .map(score -> score.makeScoreDTO())
-        .collect(Collectors.toList()));
+                .map(score -> score.makeScoreDTO())
+                .collect(Collectors.toList()));
         return dto;
     }
-
-
-
-
-
-
 
 }

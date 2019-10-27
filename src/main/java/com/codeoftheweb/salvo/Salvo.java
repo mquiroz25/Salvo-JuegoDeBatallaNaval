@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo;
 
+import com.codeoftheweb.salvo.GamePlayer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -8,12 +9,11 @@ import java.util.*;
 @Entity
 public class Salvo {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
+
     private Integer turn;
 
     @ElementCollection
@@ -24,6 +24,9 @@ public class Salvo {
     @JoinColumn(name="gamePlayer_id")
     private GamePlayer gamePlayer;
 
+
+    //constructores
+
     public Salvo(GamePlayer gamePlayer,Integer turn,List<String> salvoLocations)
     {
         this.gamePlayer=gamePlayer;
@@ -32,7 +35,6 @@ public class Salvo {
     }
 
     public Salvo() {
-
     }
 
 
@@ -54,8 +56,6 @@ public class Salvo {
         this.turn = turn;
     }
 
-
-
     public GamePlayer getGamePlayer() {
         return gamePlayer;
     }
@@ -63,7 +63,6 @@ public class Salvo {
     public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
-
 
     public List<String> getSalvoLocations() {
         return salvoLocations;
@@ -74,15 +73,16 @@ public class Salvo {
     }
 
 
+    //metodos
+
+
     public Map<String, Object> makeSalvoDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-      //  dto.put("id", this.id);
+        //  dto.put("id", this.id);
         dto.put("turn", this.turn);
         dto.put("player",this.gamePlayer.getPlayer().getId());
         dto.put("locations", this.getSalvoLocations());
         return dto;
     }
-
-
 
 }

@@ -14,25 +14,33 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.AUTO ,generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
+
     private String userName;
+
     private String password;
+
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<GamePlayer> gamePlayerSet;
+
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<Score> scores;
 
+
+    //constructores
+
     public Player(){};
+
     public Player(String userName,String password)
     {
         this.userName=userName;
         this.password=password;
     }
 
+
     //GETTER AND SETTER
     public Long getId() {
         return id;
     }
-
 
     public String getUserName() {
         return userName;
@@ -69,6 +77,9 @@ public class Player {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+    //metodos
 
     public Map<String, Object> makePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
