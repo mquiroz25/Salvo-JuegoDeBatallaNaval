@@ -62,6 +62,13 @@ public class SalvoController {
 
         GamePlayer gamePlayer = gamePlayerRepository.findById(nn).orElse(null);
 
+        if (gamePlayer==null
+        ){
+
+            return new ResponseEntity<>(makeMap("error","no se puede acceder"), HttpStatus.UNAUTHORIZED);
+
+        }
+
         Game game = gamePlayerRepository.findById(nn).orElse(null).getGame();
 
         Long IdPlayerAutenticado = getPlayerForLogin(authentication).getId();
@@ -129,12 +136,19 @@ public class SalvoController {
     @RequestMapping(value="/games/players/{gamePlayerId}/ships", method=RequestMethod.POST)
     public ResponseEntity<Object> addShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship>ships, Authentication authentication) { //request body para convertir a objeto el json enviado por post
 
+
         GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+        if(gamePlayer==null)
+        {
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+
+        }
 
         Long idPlayerLogin = getPlayerForLogin(authentication).getId();
         Long idPlayerGamePlayer = gamePlayer.getPlayer().getId();
 
-        if(isGuest(authentication)==true || gamePlayer==null || idPlayerLogin !=idPlayerGamePlayer) {
+        if (isGuest(authentication)==true || idPlayerLogin !=idPlayerGamePlayer) {
 
             return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
         }
@@ -149,5 +163,40 @@ public class SalvoController {
             shipRepository.save(ship); });
 
         return new ResponseEntity<>(makeMap("OK","los barcos se colocaron correctamente"), HttpStatus.CREATED);
+    }
+
+
+
+    @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
+    public ResponseEntity<Object> addSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) { //request body para convertir a objeto el json enviado por post
+
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+        if(gamePlayer==null)
+        {
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+
+        }
+
+        Long idPlayerLogin = getPlayerForLogin(authentication).getId();
+        Long idPlayerGamePlayer = gamePlayer.getPlayer().getId();
+
+        if (isGuest(authentication)==true || idPlayerLogin !=idPlayerGamePlayer) {
+
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+        }
+
+        //filtrar salvos del gamePlayer por el turno  del salvo enviado por post
+        List<Salvo> salvosFiltradosPorTurno = gamePlayer.getSalvoes().stream(). filter(salvo1 -> salvo1.getTurn()==salvo.getTurn()).collect(Collectors.toList());
+
+        if(salvosFiltradosPorTurno.size()!=0) //si ya tiene salvo para ese turno
+        {
+            return new ResponseEntity<>(makeMap("error","ya tiene salvo agregados para ese turno "),HttpStatus.FORBIDDEN);
+        }
+
+        salvo.setGamePlayer(gamePlayer);
+        salvoRepository.save(salvo);
+
+        return new ResponseEntity<>(makeMap("OK","el salvo se coloco correctamente"), HttpStatus.CREATED);
     }
 }
