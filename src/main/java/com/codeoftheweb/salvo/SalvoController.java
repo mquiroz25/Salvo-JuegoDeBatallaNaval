@@ -37,7 +37,7 @@ public class SalvoController {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
-    private Player getPlayer(Authentication authentication) {
+    private Player getPlayerForLogin(Authentication authentication) {
         return playerRepository.findByUserName(authentication.getName());
     }
 
@@ -54,7 +54,7 @@ public class SalvoController {
         return  map;
     }
 
-//entrar a juego
+    //entrar a juego
     @RequestMapping("/game_view/{nn}") ///nn es gamePlayer id
 
     public ResponseEntity <Map <String, Object >>enterGame(@PathVariable Long nn,Authentication authentication) {
@@ -64,7 +64,7 @@ public class SalvoController {
 
         Game game = gamePlayerRepository.findById(nn).orElse(null).getGame();
 
-        Long IdPlayerAutenticado = getPlayer(authentication).getId();
+        Long IdPlayerAutenticado = getPlayerForLogin(authentication).getId();
 
         Long IdPlayerDeGamePlayerIngresado = gamePlayer.getPlayer().getId();
 
@@ -104,26 +104,26 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
         }
 
-            Game game =gameRepository.findById(nn).orElse(null);
+        Game game =gameRepository.findById(nn).orElse(null);
 
-            if(game==null)
-            {
-                return new ResponseEntity<>(makeMap("prohibido","No existe ese juego"),HttpStatus.FORBIDDEN);
-            }
+        if(game==null)
+        {
+            return new ResponseEntity<>(makeMap("prohibido","No existe ese juego"),HttpStatus.FORBIDDEN);
+        }
 
-            if(game.getGamePlayers().size()==1){
+        if(game.getGamePlayers().size()==1){
 
-                GamePlayer gamePlayer= new GamePlayer(game,getPlayer(authentication));
-                gamePlayerRepository.save(gamePlayer);
+            GamePlayer gamePlayer= new GamePlayer(game,getPlayerForLogin(authentication));
+            gamePlayerRepository.save(gamePlayer);
 
-                Map<String, Object> dto = new LinkedHashMap<>();
-                dto.put("gpid",gamePlayer.getId());
-                return new ResponseEntity<>(dto, HttpStatus.CREATED);
-            }
+            Map<String, Object> dto = new LinkedHashMap<>();
+            dto.put("gpid",gamePlayer.getId());
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        }
 
-            else{
-                return new ResponseEntity<>(makeMap("prohibido","El juego esta lleno"),HttpStatus.FORBIDDEN);
-            }
+        else{
+            return new ResponseEntity<>(makeMap("prohibido","El juego esta lleno"),HttpStatus.FORBIDDEN);
+        }
     }
 
     @RequestMapping(value="/games/players/{gamePlayerId}/ships", method=RequestMethod.POST)
@@ -131,29 +131,23 @@ public class SalvoController {
 
         GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
 
-   Long idPlayerLogin=getPlayer(authentication).getId();
-   Long idPlayerGamePlayer=gamePlayer.getPlayer().getId();
+        Long idPlayerLogin = getPlayerForLogin(authentication).getId();
+        Long idPlayerGamePlayer = gamePlayer.getPlayer().getId();
 
-        if(isGuest(authentication)==true || gamePlayer==null || idPlayerGamePlayer!=idPlayerLogin) {
+        if(isGuest(authentication)==true || gamePlayer==null || idPlayerLogin !=idPlayerGamePlayer) {
 
             return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
         }
 
-
-    /*    if(gamePlayer.getShips()!=null)
+        if(gamePlayer.getShips().size()!=0)
         {
-            return new ResponseEntity<>("ya tiene barcos",HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error","ya tiene barcos "),HttpStatus.FORBIDDEN);
         }
-*/
-            ships.forEach((ship) -> {
-                ship.setGamePlayer(gamePlayer);
-                shipRepository.save(ship); });
 
+        ships.forEach((ship) -> {
+            ship.setGamePlayer(gamePlayer);
+            shipRepository.save(ship); });
 
-        /*    gamePlayer.setShips((Set<Ship>) ships);
-            gamePlayerRepository.save(gamePlayer);*/
-
-        return new ResponseEntity<>(makeMap("OK","bien"), HttpStatus.CREATED);
-        }
-        
+        return new ResponseEntity<>(makeMap("OK","los barcos se colocaron correctamente"), HttpStatus.CREATED);
+    }
 }
