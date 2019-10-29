@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -54,6 +53,165 @@ public class SalvoController {
         return  map;
     }
 
+
+    private Map<String,Object> mapDamages(){
+        Map<String,Object> map = new HashMap<>();
+        map.put("carrierHits",1);
+        map.put("battleshipHits",1);
+        map.put("submarineHits",1);
+        map.put("destroyerHits",1);
+        map.put("patrolboatHits",1);
+        map.put("carrier",1);
+        map.put("battleship",1);
+        map.put("submarine",1);
+        map.put("destroyer",1);
+        map.put("patrolboat",1);
+
+        return  map;
+    }
+
+
+
+
+    public  GamePlayer obtenerGamePlayerEnemigo(GamePlayer gamePlayer) {
+
+        Game game = gamePlayer.getGame();
+
+        Set<GamePlayer>listaGamePlayers= game.getGamePlayers();
+
+        GamePlayer gamePlayerEnemigo= listaGamePlayers.stream().filter(gamePlayer1 -> gamePlayer1!=gamePlayer).findAny().orElse(null);
+
+        return gamePlayerEnemigo;
+    }
+
+
+    public   List<String> listaDePosicionesDeTodosLosBarcos(GamePlayer gamePlayer) {
+
+        List <String> ubicacionesDeLosBarcos = gamePlayer.getShips() .stream()
+                .flatMap(a -> a.getLocations()
+                        .stream())
+                .collect(Collectors.toList());
+
+        return ubicacionesDeLosBarcos;
+    }
+
+
+   /* public   List<String> listaDedisparosParaUnSalvoDelEnemigo (GamePlayer gamePlayer) {
+
+        List <String> listaDeDisparosDeUnSalvo = gamePlayer.getSalvoes().stream()
+                .flatMap(a -> a.getSalvoLocations()
+                        .stream())
+                .collect(Collectors.toList());
+
+        return listaDeDisparosDeUnSalvo;
+    }*/
+
+
+ /*   public List<Map<String,Object>> turnos (GamePlayer gamePlayer) {
+
+        return  gamePlayer.getSalvoes().stream().map(salvo->salvo.newSalvoDTO()).collect(Collectors.toList());
+    }*/
+
+
+    public List <Map<String, Object>> obtenerhits(GamePlayer gamePlayer) {
+
+        //gamePlayerEnemigo
+        Game game = gamePlayer.getGame();
+
+        Set<GamePlayer>listaGamePlayers= game.getGamePlayers();
+
+        GamePlayer gamePlayerEnemigo= listaGamePlayers.stream().filter(gamePlayer1 -> gamePlayer1!=gamePlayer).findAny().orElse(null);
+       // -----------------------------------------------------------//
+
+        //lista de ubicaciones de los barcos del gamePlayer  HACER 5 LISTAS ,UNA POR CADA TIPO DE BARCO
+
+       Ship Carrier =  gamePlayer.getShips().stream()
+          .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
+
+      List <String> ubicacionesCarrier = Carrier.getLocations();
+
+
+        Ship battleship =  gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType()=="battleship").findAny().orElse(null);
+
+        List <String> ubicacionesBattleShip = battleship.getLocations();
+
+
+        Ship submarine =  gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType()=="submarine").findAny().orElse(null);
+
+        List <String> ubicacionesSubmarine= submarine.getLocations();
+
+
+        Ship destroyer =  gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType()=="destroyer").findAny().orElse(null);
+
+        List <String> ubicacionesDestroyer= destroyer.getLocations();
+
+
+        Ship patrolboat =  gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType()=="patrolboat").findAny().orElse(null);
+
+        List <String> ubicacionesPatrolboat= patrolboat.getLocations();
+
+
+
+        List<Map<String, Object>> listMap = new ArrayList<>();
+
+        Set <Salvo> listaDeSalvosDelEnemigo = gamePlayerEnemigo.getSalvoes();
+
+
+        listaDeSalvosDelEnemigo.forEach((salvo) -> {
+
+            List<String> hits = new ArrayList<>();
+
+            Map<String, Object> map = new LinkedHashMap<>();
+
+            for(String salvoLocation : salvo.getSalvoLocations()) {
+
+
+                if(ubicacionesCarrier.contains(salvoLocation))
+                {
+                    hits.add(salvoLocation);
+                }
+
+                if(ubicacionesBattleShip.contains(salvoLocation))
+                {
+                    hits.add(salvoLocation);
+                }
+
+                if(ubicacionesSubmarine.contains(salvoLocation))
+                {
+                    hits.add(salvoLocation);
+                }
+
+                if(ubicacionesDestroyer.contains(salvoLocation))
+                {
+                    hits.add(salvoLocation);
+                }
+
+                if(ubicacionesPatrolboat.contains(salvoLocation))
+                {
+                    hits.add(salvoLocation);
+                }
+            }
+
+
+            map.put("turn", salvo.getTurn());
+            map.put("hitLocations",hits);
+          //  map.put("damages",
+
+
+
+                  //  mapDamages());
+       //     map.put("missed",2);
+            listMap.add(map);
+        });
+
+        return listMap;
+    }
+
+
     //entrar a juego
     @RequestMapping("/game_view/{nn}") ///nn es gamePlayer id
 
@@ -62,11 +220,8 @@ public class SalvoController {
 
         GamePlayer gamePlayer = gamePlayerRepository.findById(nn).orElse(null);
 
-        if (gamePlayer==null
-        ){
-
+        if (gamePlayer==null){
             return new ResponseEntity<>(makeMap("error","no se puede acceder"), HttpStatus.UNAUTHORIZED);
-
         }
 
         Game game = gamePlayerRepository.findById(nn).orElse(null).getGame();
@@ -93,13 +248,19 @@ public class SalvoController {
                     .flatMap(a -> a.getSalvoes()
                             .stream().map(salvo -> salvo.makeSalvoDTO()))
                     .collect(Collectors.toList()));
-            dto.put("hits",createMap());
+            //dto.put("hits",createMap());
+
+            dto.put("self",obtenerhits(gamePlayer));
+
+            System.out.println(listaDePosicionesDeTodosLosBarcos(gamePlayer));
+
+           // System.out.println(obtenerGamePlayerEnemigo(gamePlayer));
+            //System.out.println(turnos(gamePlayer));
 
             return new ResponseEntity<>(dto, HttpStatus.OK);
+
         }
-
         return new ResponseEntity<>(makeMap("error","no se puede acceder"), HttpStatus.UNAUTHORIZED);
-
     }
 
 
