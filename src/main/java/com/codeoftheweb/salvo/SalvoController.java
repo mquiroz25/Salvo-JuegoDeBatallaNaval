@@ -53,19 +53,18 @@ public class SalvoController {
         return  map;
     }
 
-
-    private Map<String,Object> mapDamages(){
+    private Map<String,Object> mapDamages(Integer carrierHits,Integer battleshipHits,Integer submarineHits,Integer destroyerHits,Integer patrolboatHits,Integer acumuladorPatrolboat,Integer acumuladorCarrier,Integer acumuladorBattleShip,Integer acumuladorSubmarine,Integer acumuladorDestroyer){
         Map<String,Object> map = new HashMap<>();
-        map.put("carrierHits",1);
-        map.put("battleshipHits",1);
-        map.put("submarineHits",1);
-        map.put("destroyerHits",1);
-        map.put("patrolboatHits",1);
-        map.put("carrier",1);
-        map.put("battleship",1);
-        map.put("submarine",1);
-        map.put("destroyer",1);
-        map.put("patrolboat",1);
+        map.put("carrierHits",carrierHits);
+        map.put("battleshipHits",battleshipHits);
+        map.put("submarineHits",submarineHits);
+        map.put("destroyerHits",destroyerHits);
+        map.put("patrolboatHits",patrolboatHits);
+       map.put("carrier",acumuladorCarrier);
+        map.put("battleship",acumuladorBattleShip);
+        map.put("submarine",acumuladorSubmarine);
+        map.put("destroyer",acumuladorDestroyer);
+        map.put("patrolboat",acumuladorPatrolboat);
 
         return  map;
     }
@@ -96,7 +95,7 @@ public class SalvoController {
     }
 
 
-   /* public   List<String> listaDedisparosParaUnSalvoDelEnemigo (GamePlayer gamePlayer) {
+    public   List<String> listaDedisparosParaUnSalvoDelEnemigo (GamePlayer gamePlayer) {
 
         List <String> listaDeDisparosDeUnSalvo = gamePlayer.getSalvoes().stream()
                 .flatMap(a -> a.getSalvoLocations()
@@ -104,13 +103,26 @@ public class SalvoController {
                 .collect(Collectors.toList());
 
         return listaDeDisparosDeUnSalvo;
-    }*/
+    }
 
 
  /*   public List<Map<String,Object>> turnos (GamePlayer gamePlayer) {
 
         return  gamePlayer.getSalvoes().stream().map(salvo->salvo.newSalvoDTO()).collect(Collectors.toList());
     }*/
+
+   public List <String> barcos(GamePlayer gamePlayer) {
+
+       List<String> ubicacionesCarrier= new ArrayList<String>();
+
+      /* Ship carrier =  gamePlayer.getShips().stream()
+               .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
+
+        ubicacionesCarrier = carrier.getLocations();*/
+
+        return ubicacionesCarrier;
+    }
+
 
 
     public List <Map<String, Object>> obtenerhits(GamePlayer gamePlayer) {
@@ -123,90 +135,109 @@ public class SalvoController {
         GamePlayer gamePlayerEnemigo= listaGamePlayers.stream().filter(gamePlayer1 -> gamePlayer1!=gamePlayer).findAny().orElse(null);
        // -----------------------------------------------------------//
 
-        //lista de ubicaciones de los barcos del gamePlayer  HACER 5 LISTAS ,UNA POR CADA TIPO DE BARCO
 
-       Ship Carrier =  gamePlayer.getShips().stream()
-          .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
+        Ship barcoCarrier =  gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
 
-      List <String> ubicacionesCarrier = Carrier.getLocations();
-
-
-        Ship battleship =  gamePlayer.getShips().stream()
+        Ship barcoBattleship =  gamePlayer.getShips().stream()
                 .filter(ship -> ship.getType()=="battleship").findAny().orElse(null);
 
-        List <String> ubicacionesBattleShip = battleship.getLocations();
-
-
-        Ship submarine =  gamePlayer.getShips().stream()
+        Ship barcoSubmarine =  gamePlayer.getShips().stream()
                 .filter(ship -> ship.getType()=="submarine").findAny().orElse(null);
 
-        List <String> ubicacionesSubmarine= submarine.getLocations();
-
-
-        Ship destroyer =  gamePlayer.getShips().stream()
+        Ship barcoDestroyer =  gamePlayer.getShips().stream()
                 .filter(ship -> ship.getType()=="destroyer").findAny().orElse(null);
 
-        List <String> ubicacionesDestroyer= destroyer.getLocations();
-
-
-        Ship patrolboat =  gamePlayer.getShips().stream()
+        Ship barcoPatrolboat =  gamePlayer.getShips().stream()
                 .filter(ship -> ship.getType()=="patrolboat").findAny().orElse(null);
 
-        List <String> ubicacionesPatrolboat= patrolboat.getLocations();
+        //lista de ubicaciones de cada  barco del gamePlayer
 
+        List<String> ubicacionesCarrier = barcoCarrier.getLocations();
+        List<String> ubicacionesBattleShip = barcoBattleship.getLocations();
+        List<String> ubicacionesSubmarine= barcoSubmarine.getLocations();
+        List<String>  ubicacionesDestroyer= barcoDestroyer.getLocations();
+        List<String> ubicacionesPatrolboat= barcoPatrolboat.getLocations();
 
+        // -----------------------------------------------------------//
 
         List<Map<String, Object>> listMap = new ArrayList<>();
 
         Set <Salvo> listaDeSalvosDelEnemigo = gamePlayerEnemigo.getSalvoes();
 
+        //acumuladores
+        Integer acumuladorCarrier= 0;
+         Integer acumuladorBattleShip  = 0;
+         Integer acumuladorSubmarine = 0;
+        Integer acumuladorDestroyer = 0;
+        Integer acumuladorPatrolboat = 0;
 
-        listaDeSalvosDelEnemigo.forEach((salvo) -> {
 
+        //por cada salvo (conjunto de ubicaciones) veo a que barco le pego
+        for(Salvo salvoEnemigo : listaDeSalvosDelEnemigo) {
+
+          //por cada ciclo del foreach se inicializan de nuevo
             List<String> hits = new ArrayList<>();
-
             Map<String, Object> map = new LinkedHashMap<>();
+        //contadores
+            Integer carrierHits=0;
+            Integer battleshipHits=0;
+            Integer submarineHits=0;
+            Integer destroyerHits=0;
+            Integer patrolboatHits=0;
 
-            for(String salvoLocation : salvo.getSalvoLocations()) {
+            List<String>localizacionesSalvo = salvoEnemigo.getSalvoLocations();
 
+            for(String salvoLocation : localizacionesSalvo) {
 
                 if(ubicacionesCarrier.contains(salvoLocation))
                 {
                     hits.add(salvoLocation);
+                    carrierHits++;
+
                 }
 
                 if(ubicacionesBattleShip.contains(salvoLocation))
                 {
                     hits.add(salvoLocation);
+                    battleshipHits++;
                 }
 
                 if(ubicacionesSubmarine.contains(salvoLocation))
                 {
                     hits.add(salvoLocation);
+                    submarineHits++;
                 }
 
                 if(ubicacionesDestroyer.contains(salvoLocation))
                 {
                     hits.add(salvoLocation);
+                    destroyerHits++;
                 }
 
                 if(ubicacionesPatrolboat.contains(salvoLocation))
                 {
                     hits.add(salvoLocation);
+                    patrolboatHits++;
                 }
             }
 
+            acumuladorPatrolboat = acumuladorPatrolboat +patrolboatHits;
+            acumuladorCarrier = acumuladorCarrier +carrierHits;
+            acumuladorBattleShip=acumuladorBattleShip + battleshipHits;
+            acumuladorSubmarine=acumuladorSubmarine+ submarineHits;
+            acumuladorDestroyer=acumuladorDestroyer+ destroyerHits;
+      /*      acumuladorCarrier = acumuladorCarrier + carrierHits;
+            acumuladorBattleShip = acumuladorBattleShip + battleshipHits;
+            acumuladorSubmarine = acumuladorSubmarine + submarineHits;
+            acumuladorDestroyer = acumuladorDestroyer + destroyerHits;*/
 
-            map.put("turn", salvo.getTurn());
+            map.put("turn", salvoEnemigo.getTurn());
             map.put("hitLocations",hits);
-          //  map.put("damages",
-
-
-
-                  //  mapDamages());
+            map.put("damages",mapDamages(carrierHits,battleshipHits,submarineHits,destroyerHits,patrolboatHits,acumuladorPatrolboat,acumuladorCarrier,acumuladorBattleShip,acumuladorSubmarine,acumuladorDestroyer));
        //     map.put("missed",2);
             listMap.add(map);
-        });
+        }
 
         return listMap;
     }
@@ -248,15 +279,15 @@ public class SalvoController {
                     .flatMap(a -> a.getSalvoes()
                             .stream().map(salvo -> salvo.makeSalvoDTO()))
                     .collect(Collectors.toList()));
-            //dto.put("hits",createMap());
+            dto.put("hits",createMap());
 
-            dto.put("self",obtenerhits(gamePlayer));
+          //  dto.put("self",obtenerhits(gamePlayer));
 
-            System.out.println(listaDePosicionesDeTodosLosBarcos(gamePlayer));
+            //   System.out.println(listaDePosicionesDeTodosLosBarcos(gamePlayer));
 
-           // System.out.println(obtenerGamePlayerEnemigo(gamePlayer));
+            // System.out.println(obtenerGamePlayerEnemigo(gamePlayer));
             //System.out.println(turnos(gamePlayer));
-
+            // System.out.println(barcos(gamePlayer));
             return new ResponseEntity<>(dto, HttpStatus.OK);
 
         }
@@ -327,8 +358,8 @@ public class SalvoController {
     }
 
 
-
-    @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
+//miguel
+  /*  @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
     public ResponseEntity<Object> addSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) { //request body para convertir a objeto el json enviado por post
 
         GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
@@ -359,5 +390,68 @@ public class SalvoController {
         salvoRepository.save(salvo);
 
         return new ResponseEntity<>(makeMap("OK","el salvo se coloco correctamente"), HttpStatus.CREATED);
+    }*/
+
+
+    @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
+    public ResponseEntity<Object> addSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) { //request body para convertir a objeto el json enviado por post
+
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+
+        Player player =getPlayerForLogin(authentication);
+
+        if(player==null)
+        {
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+        }
+
+        if(gamePlayer==null)
+        {
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+        }
+
+        Long idPlayerLogin = getPlayerForLogin(authentication).getId();
+        Long idPlayerGamePlayer = gamePlayer.getPlayer().getId();
+
+        if (isGuest(authentication)==true || idPlayerLogin !=idPlayerGamePlayer) {
+
+            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
+        }
+
+        GamePlayer opponent = obtenerGamePlayerEnemigo(gamePlayer);
+//bien
+        if(opponent==null) {
+
+            return new ResponseEntity<>(makeMap("error", "no hay oponente ,no se puede registrar salvo"), HttpStatus.FORBIDDEN);
+        }
+
+
+        if(opponent!=null) {
+
+            //solo entra a este si el gamePlayer no tiene salvos,sino sigue al siguiente if
+            if (gamePlayer.getSalvoes().isEmpty()){
+                salvo.setTurn(1);
+                salvo.setGamePlayer(gamePlayer);
+                salvoRepository.save(salvo);
+                return new ResponseEntity<>(makeMap("OK","salvo creado"), HttpStatus.CREATED);
+            }
+
+
+            if (gamePlayer.getSalvoes().size() == opponent.getSalvoes().size()) {
+
+                salvo.setTurn(gamePlayer.getSalvoes().size() + 1);
+                salvo.setGamePlayer(gamePlayer);
+            } else {
+
+                return new ResponseEntity<>(makeMap("error", "ya tiene salvo en este turno"), HttpStatus.FORBIDDEN);
+
+            }
+        }
+
+        salvo.setGamePlayer(gamePlayer);
+        salvoRepository.save(salvo);
+
+        return new ResponseEntity<>(makeMap("OK", "salvo creado"), HttpStatus.CREATED);
     }
+
 }
