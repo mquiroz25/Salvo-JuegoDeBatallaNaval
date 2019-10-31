@@ -46,10 +46,10 @@ public class SalvoController {
         return  map;
     }
 
-    private Map<String,Object> createMapHits(GamePlayer gamePlayer){
+    private Map<String,Object> createMapHits(GamePlayer gamePlayer ,GamePlayer gamePlayerOponnent){
         Map<String,Object> map = new HashMap<>();
-        map.put("self",obtenerHitsSelf(gamePlayer));
-        map.put("opponent",new ArrayList<Object>());
+        map.put("self",obtenerHits(gamePlayer));
+        map.put("opponent",obtenerHits(gamePlayerOponnent));
         return  map;
     }
 
@@ -80,48 +80,7 @@ public class SalvoController {
         return gamePlayerEnemigo;
     }
 
-
-   /* public   List<String> listaDePosicionesDeTodosLosBarcos(GamePlayer gamePlayer) {
-
-        List <String> ubicacionesDeLosBarcos = gamePlayer.getShips() .stream()
-                .flatMap(a -> a.getLocations()
-                        .stream())
-                .collect(Collectors.toList());
-
-        return ubicacionesDeLosBarcos;
-    }*/
-
-
-   /* public   List<String> listaDedisparosParaUnSalvoDelEnemigo (GamePlayer gamePlayer) {
-
-        List <String> listaDeDisparosDeUnSalvo = gamePlayer.getSalvoes().stream()
-                .flatMap(a -> a.getSalvoLocations()
-                        .stream())
-                .collect(Collectors.toList());
-
-        return listaDeDisparosDeUnSalvo;
-    }*/
-
-
- /*   public List<Map<String,Object>> turnos (GamePlayer gamePlayer) {
-
-        return  gamePlayer.getSalvoes().stream().map(salvo->salvo.newSalvoDTO()).collect(Collectors.toList());
-    }*/
-
-   /*public List <String> barcos(GamePlayer gamePlayer) {
-
-       List<String> ubicacionesCarrier= new ArrayList<String>();
-
-       Ship carrier =  gamePlayer.getShips().stream()
-               .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
-
-        ubicacionesCarrier = carrier.getLocations();
-
-        return ubicacionesCarrier;
-    }*/
-
-
-    public List <Map<String, Object>> obtenerHitsSelf(GamePlayer gamePlayer) {
+    public List <Map<String, Object>> obtenerHits(GamePlayer gamePlayer) {
 
         List<String> ubicacionesCarrier = new ArrayList<>();
         List<String> ubicacionesBattleShip = new ArrayList<>();
@@ -178,7 +137,7 @@ public class SalvoController {
 
         List<Map<String, Object>> listMap = new ArrayList<>();
 
-        //por cada salvo (conjunto de ubicaciones) veo a que barco le pego
+        //por cada salvoOponnent (conjunto de ubicaciones) veo a que barcos me pega
         for(Salvo salvoEnemigo : listaDeSalvosOpponent) {
             //por cada ciclo del foreach se inicializan de nuevo
 
@@ -268,7 +227,6 @@ public class SalvoController {
         return listMap;
     }
 
-
     //entrar a juego
     @RequestMapping("/game_view/{nn}") ///nn es gamePlayer id
 
@@ -289,6 +247,8 @@ public class SalvoController {
 
         if (IdPlayerAutenticado == IdPlayerDeGamePlayerIngresado){
 
+           GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
+
             dto.put("id", game.getId());
             dto.put("created", game.getCreationDate());
             dto.put("gameState","PLACESHIPS");
@@ -305,7 +265,7 @@ public class SalvoController {
                     .flatMap(a -> a.getSalvoes()
                             .stream().map(salvo -> salvo.makeSalvoDTO()))
                     .collect(Collectors.toList()));
-            dto.put("hits",createMapHits(gamePlayer));
+            dto.put("hits",createMapHits(gamePlayer,gamePlayerOponnent));
 
             return new ResponseEntity<>(dto, HttpStatus.OK);
 
@@ -377,41 +337,6 @@ public class SalvoController {
     }
 
 
-//miguel
-  /*  @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
-    public ResponseEntity<Object> addSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) { //request body para convertir a objeto el json enviado por post
-
-        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
-
-        if(gamePlayer==null)
-        {
-            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
-
-        }
-
-        Long idPlayerLogin = getPlayerForLogin(authentication).getId();
-        Long idPlayerGamePlayer = gamePlayer.getPlayer().getId();
-
-        if (isGuest(authentication)==true || idPlayerLogin !=idPlayerGamePlayer) {
-
-            return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
-        }
-
-        //filtrar salvos del gamePlayer por el turno  del salvo enviado por post
-        List<Salvo> salvosFiltradosPorTurno = gamePlayer.getSalvoes().stream(). filter(salvo1 -> salvo1.getTurn()==salvo.getTurn()).collect(Collectors.toList());
-
-        if(salvosFiltradosPorTurno.size()!=0) //si ya tiene salvo para ese turno
-        {
-            return new ResponseEntity<>(makeMap("error","ya tiene salvo agregados para ese turno "),HttpStatus.FORBIDDEN);
-        }
-
-        salvo.setGamePlayer(gamePlayer);
-        salvoRepository.save(salvo);
-
-        return new ResponseEntity<>(makeMap("OK","el salvo se coloco correctamente"), HttpStatus.CREATED);
-    }*/
-
-
     @RequestMapping(value="/games/players/{gamePlayerId}/salvoes", method=RequestMethod.POST)
     public ResponseEntity<Object> addSalvoes(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) { //request body para convertir a objeto el json enviado por post
 
@@ -438,7 +363,7 @@ public class SalvoController {
         }
 
         GamePlayer opponent = getGamePlayerOponnet(gamePlayer);
-//bien
+
         if(opponent==null) {
 
             return new ResponseEntity<>(makeMap("error", "no hay oponente ,no se puede registrar salvo"), HttpStatus.FORBIDDEN);
