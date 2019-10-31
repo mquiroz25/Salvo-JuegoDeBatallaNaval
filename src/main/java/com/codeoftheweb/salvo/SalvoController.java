@@ -137,7 +137,6 @@ public class SalvoController {
         // -----------------------------------------------------------//
 
         // lista de salvos del oponente
-
         GamePlayer gamePlayerOpponent = getGamePlayerOponnet(gamePlayer);
 
         Set <Salvo> listaDeSalvosOpponent = gamePlayerOpponent.getSalvoes();
@@ -164,7 +163,7 @@ public class SalvoController {
             Integer submarineHits=0;
             Integer destroyerHits=0;
             Integer patrolboatHits=0;
-            Integer missed=0;
+            Integer missed = 0;
 
             List<String>localizacionesSalvo = salvoEnemigo.getSalvoLocations();
 
@@ -207,29 +206,8 @@ public class SalvoController {
             acumuladorSubmarine=acumuladorSubmarine+ submarineHits;
             acumuladorDestroyer=acumuladorDestroyer+ destroyerHits;
 
-            //comparo los acumuladores con los tamaños de cada barco
-
-            if(acumuladorPatrolboat == ubicacionesPatrolboat.size())
-            {
-                missed++;
-            }
-
-            if(acumuladorBattleShip == ubicacionesBattleShip.size())
-            {
-                missed++;
-            }
-            if(acumuladorCarrier==ubicacionesCarrier.size()){
-
-                missed++;
-            }
-            if(acumuladorDestroyer==ubicacionesDestroyer.size())
-            {
-                missed++;
-            }
-            if ((acumuladorSubmarine==ubicacionesSubmarine.size()))
-            {
-                missed++;
-            }
+            //tiros fallados
+            missed = localizacionesSalvo.size() - hits.size();
 
             map.put("turn", salvoEnemigo.getTurn());
             map.put("hitLocations",hits);
@@ -243,7 +221,6 @@ public class SalvoController {
 
     //entrar a juego
     @RequestMapping("/game_view/{nn}") ///nn es gamePlayer id
-
     public ResponseEntity <Map <String, Object >>enterGame(@PathVariable Long nn,Authentication authentication) {
         Map<String, Object> dto = new LinkedHashMap<>();
 
@@ -282,7 +259,6 @@ public class SalvoController {
             dto.put("hits",createMapHits(gamePlayer,gamePlayerOponnent));
 
             return new ResponseEntity<>(dto, HttpStatus.OK);
-
         }
         return new ResponseEntity<>(makeMap("error","no se puede acceder"), HttpStatus.UNAUTHORIZED);
     }
@@ -327,7 +303,6 @@ public class SalvoController {
         if(gamePlayer==null)
         {
             return new ResponseEntity<>(makeMap("error","no autorizado"), HttpStatus.UNAUTHORIZED);
-
         }
 
         Long idPlayerLogin = getPlayerForLogin(authentication).getId();
@@ -407,5 +382,4 @@ public class SalvoController {
 
         return new ResponseEntity<>(makeMap("OK", "salvo creado"), HttpStatus.CREATED);
     }
-
 }

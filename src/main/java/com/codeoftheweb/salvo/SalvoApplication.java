@@ -43,7 +43,7 @@ public class SalvoApplication {
 
                         // save a couple of Players
                         Player player1=new Player("JackBauer@gmail.com", passwordEncoder().encode("24"));
-                        Player player2=new Player("Chloe O'Brian ",passwordEncoder().encode("42"));
+                        Player player2=new Player("ChloeOBrian@gmail.com",passwordEncoder().encode("42"));
                         Player player3=new Player( "KimBauer@gmail.com",passwordEncoder().encode("kb"));
                         Player player4=new Player( "Tony Almeida",passwordEncoder().encode("mole"));
 
@@ -119,46 +119,43 @@ public class SalvoApplication {
                         Ship ship1 = new Ship("destroyer",gamePlayer1,Arrays.asList("H2", "H3", "H4"));
                         Ship ship2 = new Ship("submarine",gamePlayer1,Arrays.asList("E1", "F1", "G1"));
                         Ship ship3 = new Ship("patrolboat",gamePlayer1,Arrays.asList("B3","B4","B5"));
-                        Ship ship28 = new Ship("carrier",gamePlayer1,Arrays.asList("G6", "H6"));
-                        Ship ship29 = new Ship("battleship",gamePlayer1,Arrays.asList("F1", "F2"));
+
 
                         Ship ship4 = new Ship("destroyer",gamePlayer2,Arrays.asList("B5", "C5","D5"));
                         Ship ship5 = new Ship("patrolboat",gamePlayer2,Arrays.asList("F1", "F2"));
-                        Ship ship30 = new Ship("carrier",gamePlayer2,Arrays.asList("G6", "H6"));
-                        Ship ship31 = new Ship("battleship",gamePlayer2,Arrays.asList("F1", "F2"));
-                        Ship ship32 = new Ship("submarine",gamePlayer2,Arrays.asList("E1", "F1", "G1"));
+
 
                         Ship ship6 = new Ship("destroyer",gamePlayer3,Arrays.asList("B5", "C5","D5"));
                         Ship ship7 = new Ship("patrolboat",gamePlayer3,Arrays.asList("C6", "C7"));
 
-                        Ship ship8 = new Ship("submarine ",gamePlayer4,Arrays.asList("A2","A3","A4"));
-                        Ship ship9 = new Ship("patrolboat ",gamePlayer4,Arrays.asList("G6", "H6"));
+                        Ship ship8 = new Ship("submarine",gamePlayer4,Arrays.asList("A2","A3","A4"));
+                        Ship ship9 = new Ship("patrolboat",gamePlayer4,Arrays.asList("G6", "H6"));
 
-                        Ship ship10 = new Ship("destroyer ",gamePlayer5,Arrays.asList("B5","C5","D5"));
-                        Ship ship11 = new Ship("patrolboat ",gamePlayer5,Arrays.asList("C6", "C7"));
+                        Ship ship10 = new Ship("destroyer",gamePlayer5,Arrays.asList("B5","C5","D5"));
+                        Ship ship11 = new Ship("patrolboat",gamePlayer5,Arrays.asList("C6", "C7"));
 
-                        Ship ship12 = new Ship("submarine  ",gamePlayer6,Arrays.asList("A2","A3","A4"));
-                        Ship ship13 = new Ship("patrolboat ",gamePlayer6,Arrays.asList("G6", "H6"));
+                        Ship ship12 = new Ship("submarine",gamePlayer6,Arrays.asList("A2","A3","A4"));
+                        Ship ship13 = new Ship("patrolboat",gamePlayer6,Arrays.asList("G6", "H6"));
 
-                        Ship ship14 = new Ship("destroyer   ",gamePlayer7,Arrays.asList("B5","C5","D5"));
+                        Ship ship14 = new Ship("destroyer",gamePlayer7,Arrays.asList("B5","C5","D5"));
                         Ship ship15 = new Ship("patrolboat",gamePlayer7,Arrays.asList("C6", "C7"));
 
-                        Ship ship16 = new Ship("submarine    ",gamePlayer8,Arrays.asList("A2","A3","A4"));
-                        Ship ship17 = new Ship("patrolboat ",gamePlayer8,Arrays.asList("G6", "H6"));
+                        Ship ship16 = new Ship("submarine",gamePlayer8,Arrays.asList("A2","A3","A4"));
+                        Ship ship17 = new Ship("patrolboat",gamePlayer8,Arrays.asList("G6", "H6"));
 
-                        Ship ship18 = new Ship("destroyer    ",gamePlayer9,Arrays.asList("B5","C5","D5"));
+                        Ship ship18 = new Ship("destroyer",gamePlayer9,Arrays.asList("B5","C5","D5"));
                         Ship ship19 = new Ship("patrolboat",gamePlayer9,Arrays.asList("C6", "C7"));
 
-                        Ship ship20 = new Ship("submarine    ",gamePlayer10,Arrays.asList("A2","A3","A4"));
-                        Ship ship21 = new Ship("patrolboat ",gamePlayer10,Arrays.asList("G6", "H6"));
+                        Ship ship20 = new Ship("submarine",gamePlayer10,Arrays.asList("A2","A3","A4"));
+                        Ship ship21 = new Ship("patrolboat",gamePlayer10,Arrays.asList("G6", "H6"));
 
-                        Ship ship22 = new Ship("destroyer  ",gamePlayer11,Arrays.asList("B5","C5","D5"));
-                        Ship ship23 = new Ship("patrolboat ",gamePlayer11,Arrays.asList("C6", "C7"));
+                        Ship ship22 = new Ship("destroyer",gamePlayer11,Arrays.asList("B5","C5","D5"));
+                        Ship ship23 = new Ship("patrolboat",gamePlayer11,Arrays.asList("C6", "C7"));
 
-                        Ship ship24 = new Ship("destroyer   ",gamePlayer15,Arrays.asList("B5","C5","D5"));
+                        Ship ship24 = new Ship("destroyer",gamePlayer15,Arrays.asList("B5","C5","D5"));
                         Ship ship25 = new Ship("patrolboat",gamePlayer15,Arrays.asList("C6", "C7"));
 
-                        Ship ship26 = new Ship("submarine ",gamePlayer16,Arrays.asList("A2","A3","A4"));
+                        Ship ship26 = new Ship("submarine",gamePlayer16,Arrays.asList("A2","A3","A4"));
                         Ship ship27 = new Ship("patrolboat",gamePlayer16,Arrays.asList("G6", "H6"));
 
                         shipRepository.save(ship1);
@@ -188,11 +185,6 @@ public class SalvoApplication {
                         shipRepository.save(ship25);
                         shipRepository.save(ship26);
                         shipRepository.save(ship27);
-                        shipRepository.save(ship28);
-                        shipRepository.save(ship29);
-                        shipRepository.save(ship30);
-                        shipRepository.save(ship31);
-                        shipRepository.save(ship32);
 
 
                         Salvo salvo1= new Salvo(gamePlayer1,1,Arrays.asList("B5","C5","F1"));
