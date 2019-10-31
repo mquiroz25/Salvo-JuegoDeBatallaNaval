@@ -70,7 +70,7 @@ public class GameController {
             return new ResponseEntity<>(makeMap("error", "no autorizado"), HttpStatus.UNAUTHORIZED);
         }
         else{
-            Game game =new Game();
+            Game game =new Game((long) 0);//al crear un juego uso este constructor
             gameRepository.save(game);
             GamePlayer gamePlayer = new GamePlayer(game,getPlayer(authentication));
             gamePlayerRepository.save(gamePlayer);

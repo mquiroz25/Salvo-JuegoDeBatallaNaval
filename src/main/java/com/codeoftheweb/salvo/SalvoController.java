@@ -48,9 +48,23 @@ public class SalvoController {
 
     private Map<String,Object> createMapHits(GamePlayer gamePlayer ,GamePlayer gamePlayerOponnent){
         Map<String,Object> map = new HashMap<>();
+
+        if(gamePlayer!=null && gamePlayerOponnent!=null){
+
         map.put("self",obtenerHits(gamePlayer));
         map.put("opponent",obtenerHits(gamePlayerOponnent));
+
         return  map;
+        }
+
+
+        map.put("self",new ArrayList<Map<String,Object>>());
+        map.put("opponent",new ArrayList<Map<String,Object>>());
+
+        return  map;
+
+
+
     }
 
     private Map<String,Object> mapDamages(Integer carrierHits,Integer battleshipHits,Integer submarineHits,Integer destroyerHits,Integer patrolboatHits,Integer acumuladorPatrolboat,Integer acumuladorCarrier,Integer acumuladorBattleShip,Integer acumuladorSubmarine,Integer acumuladorDestroyer){
