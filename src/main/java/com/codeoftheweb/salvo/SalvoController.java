@@ -237,11 +237,40 @@ public class SalvoController {
 
         if (IdPlayerAutenticado == IdPlayerDeGamePlayerIngresado){
 
-           GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
+            GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
+
+            if(gamePlayer.getShips().size()==0){
+                dto.put("gameState","PLACESHIPS");
+            }
+
+            if(gamePlayerOponnent==null)
+                { dto.put("gameState","PLACESHIPS");
+                }
+
+            else{
+
+                if(gamePlayerOponnent.getShips().size()==0){
+
+                    dto.put("gameState","WAITINGFOROPP");
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
 
             dto.put("id", game.getId());
             dto.put("created", game.getCreationDate());
-            dto.put("gameState","PLACESHIPS");
+            //    dto.put("gameState","WAITINGFOROPP");
             dto.put("gamePlayers", game.getGamePlayers()
                     .stream()
                     .map(a -> a.makeGamePlayerDTO())
@@ -359,6 +388,11 @@ public class SalvoController {
 
         if(opponent!=null) {
 
+            if(salvo.getSalvoLocations().size()>5)
+            {
+                return new ResponseEntity<>(makeMap("error", "el salvo tiene mas de 5 disparos"), HttpStatus.FORBIDDEN);
+            }
+
             //solo entra a este si el gamePlayer no tiene salvos,sino sigue al siguiente if
             if (gamePlayer.getSalvoes().isEmpty()){
                 salvo.setTurn(1);
@@ -367,7 +401,7 @@ public class SalvoController {
                 return new ResponseEntity<>(makeMap("OK","salvo creado"), HttpStatus.CREATED);
             }
 
-            if (gamePlayer.getSalvoes().size() == opponent.getSalvoes().size()) {
+            if (gamePlayer.getSalvoes().size() <= opponent.getSalvoes().size()) {
 
                 salvo.setTurn(gamePlayer.getSalvoes().size() + 1);
                 salvo.setGamePlayer(gamePlayer);

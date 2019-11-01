@@ -20,6 +20,8 @@ public class Game {
 
     private LocalDateTime creationDate;
 
+    private String gameState;
+
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     private  Set<GamePlayer> gamePlayers;
 
@@ -66,6 +68,15 @@ public class Game {
 
     public void setScores(Set<Score> scores) {
         this.scores = scores;
+    }
+
+
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
     }
 
 

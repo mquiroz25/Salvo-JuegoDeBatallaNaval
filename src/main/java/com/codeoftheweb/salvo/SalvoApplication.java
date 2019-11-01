@@ -45,7 +45,7 @@ public class SalvoApplication {
                         Player player1=new Player("JackBauer@gmail.com", passwordEncoder().encode("24"));
                         Player player2=new Player("ChloeOBrian@gmail.com",passwordEncoder().encode("42"));
                         Player player3=new Player( "KimBauer@gmail.com",passwordEncoder().encode("kb"));
-                        Player player4=new Player( "Tony Almeida",passwordEncoder().encode("mole"));
+                        Player player4=new Player( "TonyAlmeida@gmail.com",passwordEncoder().encode("mole"));
 
 
                         playerRepository.save(player1);
