@@ -163,7 +163,7 @@ public class SalvoController {
             Integer submarineHits=0;
             Integer destroyerHits=0;
             Integer patrolboatHits=0;
-            Integer missed = 0;
+            Integer missed;
 
             List<String>localizacionesSalvo = salvoEnemigo.getSalvoLocations();
 
@@ -215,7 +215,6 @@ public class SalvoController {
             map.put("missed",missed);
             listMap.add(map);
         }
-
         return listMap;
     }
 
