@@ -239,38 +239,74 @@ public class SalvoController {
 
             GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
 
-            if(gamePlayer.getShips().size()==0){
+
+         if(gamePlayer.getShips().size()==0){
                 dto.put("gameState","PLACESHIPS");
             }
 
-            if(gamePlayerOponnent==null)
-                { dto.put("gameState","PLACESHIPS");
-                }
-
             else{
 
-                if(gamePlayerOponnent.getShips().size()==0){
+                if(gamePlayerOponnent==null){
 
                     dto.put("gameState","WAITINGFOROPP");
+                }
+                else{
+                    if(gamePlayerOponnent.getShips().size()==0){
+
+                        dto.put("gameState","WAITINGFOROPP");
+                    }
+                    else{
+
+
+                        if (gamePlayer.getSalvoes().size() == gamePlayerOponnent.getSalvoes().size()) {
+
+                            if(gamePlayer.getId() < gamePlayerOponnent.getId()) {
+
+                            dto.put("gameState","PLAY");
+                            }
+
+                            else{
+                                dto.put("gameState","WAIT");
+                            }
+                        }
+
+
+                        if (gamePlayer.getSalvoes().size() > gamePlayerOponnent.getSalvoes().size())
+                        {
+                            dto.put("gameState","WAIT");
+                        }
+
+                        else{
+
+                            if (gamePlayer.getSalvoes().size() < gamePlayerOponnent.getSalvoes().size())
+                            {
+                                dto.put("gameState","PLAY");
+                            }
+
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
 
                 }
-
-
             }
-
-
-
-
-
-
-
 
 
 
 
             dto.put("id", game.getId());
             dto.put("created", game.getCreationDate());
-            //    dto.put("gameState","WAITINGFOROPP");
+           //   dto.put("gameState","WAIT");
             dto.put("gamePlayers", game.getGamePlayers()
                     .stream()
                     .map(a -> a.makeGamePlayerDTO())
