@@ -272,6 +272,8 @@ public class SalvoController {
             GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
 
 
+            //logica del juego
+
             if(gamePlayer.getShips().size()==0){
                 gameState="PLACESHIPS";
             }
@@ -283,10 +285,12 @@ public class SalvoController {
                     gameState="WAITINGFOROPP";
                 }
                 else{
+
                     if(gamePlayerOponnent.getShips().size()==0){
 
                         gameState="WAIT";
                     }
+
                     else{
 
                         if (gamePlayer.getSalvoes().size() == gamePlayerOponnent.getSalvoes().size()) {
@@ -299,6 +303,29 @@ public class SalvoController {
                             else{
                                 gameState="WAIT";
                             }
+
+                            if(estanHundidosLosBarcos(gamePlayer) == true && estanHundidosLosBarcos(gamePlayerOponnent) == true){
+                                gameState="TIE";
+                                Score score= new Score(game, gamePlayer.getPlayer(),0.5);
+                                scoreRepository.save(score);
+                            }
+
+                            else{
+
+                                if(estanHundidosLosBarcos(gamePlayerOponnent)==true){
+                                    gameState="WON";
+
+                                    Score score= new Score(game, gamePlayer.getPlayer(),1.0);
+                                    scoreRepository.save(score);
+                                }
+
+                                if(estanHundidosLosBarcos(gamePlayer)==true){
+                                    gameState="LOST";
+                                    Score score= new Score(game, gamePlayer.getPlayer(),0.0);
+                                    scoreRepository.save(score);
+                                }
+                            }
+
                         }
 
                         if (gamePlayer.getSalvoes().size() > gamePlayerOponnent.getSalvoes().size())
@@ -312,24 +339,8 @@ public class SalvoController {
                             {
                                 gameState="PLAY";
                             }
-
                         }
-
-                       if(estanHundidosLosBarcos(gamePlayerOponnent)==true){
-                            gameState="WON";
-
-                           Score score= new Score(game, gamePlayer.getPlayer(),1.0);
-                           scoreRepository.save(score);
-                        }
-
-                       if(estanHundidosLosBarcos(gamePlayer)==true){
-                               gameState="LOST";
-                           Score score= new Score(game, gamePlayer.getPlayer(),0.0);
-                           scoreRepository.save(score);
-                           }
-
                     }
-
                 }
             }
 
