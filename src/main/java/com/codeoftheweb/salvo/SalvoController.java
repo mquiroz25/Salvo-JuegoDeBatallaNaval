@@ -62,9 +62,6 @@ public class SalvoController {
         map.put("opponent",new ArrayList<Map<String,Object>>());
 
         return  map;
-
-
-
     }
 
     private Map<String,Object> mapDamages(Integer carrierHits,Integer battleshipHits,Integer submarineHits,Integer destroyerHits,Integer patrolboatHits,Integer acumuladorPatrolboat,Integer acumuladorCarrier,Integer acumuladorBattleShip,Integer acumuladorSubmarine,Integer acumuladorDestroyer){
@@ -94,6 +91,36 @@ public class SalvoController {
         return gamePlayerEnemigo;
     }
 
+    public Boolean estanHundidosLosBarcos(GamePlayer gamePlayer){
+
+        List<String>ubicacionesDeTodosLosBarcosGamePlayer = gamePlayer.getShips().stream().flatMap(ship -> ship.getLocations().stream()).collect(Collectors.toList());
+
+        GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
+        Set<Salvo> listaSalvosOponnent = gamePlayerOponnent.getSalvoes();
+        Integer hits = 0;
+
+        for (Salvo salvo : listaSalvosOponnent) {
+
+            List<String>ubicacionesSalvo = salvo.getSalvoLocations();
+
+            for (String ubicacionSalvo:ubicacionesSalvo) {
+
+                if(ubicacionesDeTodosLosBarcosGamePlayer.contains(ubicacionSalvo)){
+
+                    hits++;
+                }
+            }
+        }
+
+        if(hits == ubicacionesDeTodosLosBarcosGamePlayer.size())
+        {
+            return true;
+        }
+
+        else{
+            return false;
+        }
+    }
 
 
     public List <Map<String, Object>> obtenerHits(GamePlayer gamePlayer) {
@@ -287,17 +314,14 @@ public class SalvoController {
 
                         }
 
-                      /*  if(estanLosBarcosHundidos(gamePlayerOponnent)==true){
-
+                       if(estanHundidosLosBarcos(gamePlayerOponnent)==true){
                             gameState="WON";
-                        }*/
+                        }
 
                     }
 
                 }
             }
-
-
 
             dto.put("id", game.getId());
             dto.put("created", game.getCreationDate());
