@@ -29,6 +29,9 @@ public class SalvoController {
     @Autowired //para instanciar el objeto
     private ShipRepository shipRepository;
 
+    @Autowired //para instanciar el objeto
+    private ScoreRepository scoreRepository;
+
 
     //metodos
 
@@ -282,10 +285,9 @@ public class SalvoController {
                 else{
                     if(gamePlayerOponnent.getShips().size()==0){
 
-                        gameState="WAITINGFOROPP";
+                        gameState="WAIT";
                     }
                     else{
-
 
                         if (gamePlayer.getSalvoes().size() == gamePlayerOponnent.getSalvoes().size()) {
 
@@ -298,7 +300,6 @@ public class SalvoController {
                                 gameState="WAIT";
                             }
                         }
-
 
                         if (gamePlayer.getSalvoes().size() > gamePlayerOponnent.getSalvoes().size())
                         {
@@ -316,7 +317,16 @@ public class SalvoController {
 
                        if(estanHundidosLosBarcos(gamePlayerOponnent)==true){
                             gameState="WON";
+
+                           Score score= new Score(game, gamePlayer.getPlayer(),1.0);
+                           scoreRepository.save(score);
                         }
+
+                       if(estanHundidosLosBarcos(gamePlayer)==true){
+                               gameState="LOST";
+                           Score score= new Score(game, gamePlayer.getPlayer(),0.0);
+                           scoreRepository.save(score);
+                           }
 
                     }
 
