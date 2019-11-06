@@ -271,7 +271,7 @@ public class SalvoController {
 
             GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
 
-            Score ultimoScore= gamePlayer.getPlayer().getScores().stream().filter(score1 -> score1.getId()==gamePlayer.getPlayer().getScores().size()-1).findAny().orElse(null);
+            Score ultimoScore = gamePlayer.getPlayer().getScores().stream().filter(score1 -> score1.getId()==gamePlayer.getPlayer().getScores().size()-1).findAny().orElse(null);
             //logica del juego
 
             if(gamePlayer.getShips().size()==0){
@@ -332,10 +332,7 @@ public class SalvoController {
                                     gameState="LOST";
                                     Score score= new Score(game, gamePlayer.getPlayer(),0.0);
 
-
-
                                     if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
-
                                     {
                                         scoreRepository.save(score);
                                     }
@@ -358,55 +355,6 @@ public class SalvoController {
                     }
                 }
             }
-
-/*
-            List<String> ubicacionesCarrier = new ArrayList<>();
-            List<String> ubicacionesBattleShip = new ArrayList<>();
-            List<String> ubicacionesSubmarine = new ArrayList<>();
-            List<String> ubicacionesDestroyer = new ArrayList<>();
-            List<String> ubicacionesPatrolboat = new ArrayList<>();
-
-            //lista de ubicaciones de cada  barco del gamePlayer
-
-            Ship barcoCarrier =  gamePlayer.getShips().stream()
-                    .filter(ship -> ship.getType().equalsIgnoreCase("carrier")).findAny().orElse(null);
-
-            Ship barcoBattleship =  gamePlayer.getShips().stream()
-                    .filter(ship -> ship.getType().equalsIgnoreCase("battleship")).findAny().orElse(null);
-
-            Ship barcoSubmarine =  gamePlayer.getShips().stream()
-                    .filter(ship -> ship.getType()=="submarine").findAny().orElse(null);
-
-            Ship barcoDestroyer =  gamePlayer.getShips().stream()
-                    .filter(ship -> ship.getType()=="destroyer").findAny().orElse(null);
-
-            Ship barcoPatrolboat =  gamePlayer.getShips().stream()
-                    .filter(ship -> ship.getType()=="patrolboat").findAny().orElse(null);
-
-            if(barcoCarrier!=null)
-            { ubicacionesCarrier = barcoCarrier.getLocations();}
-
-            if (barcoBattleship!=null)
-            { ubicacionesBattleShip = barcoBattleship.getLocations();}
-
-            if(barcoSubmarine!=null)
-            {ubicacionesSubmarine= barcoSubmarine.getLocations();}
-
-            if(barcoDestroyer!=null)
-            {ubicacionesDestroyer= barcoDestroyer.getLocations();}
-
-            if(barcoPatrolboat!=null)
-            {ubicacionesPatrolboat= barcoPatrolboat.getLocations();}
-
-
-
-
-            System.out.println("carrier "+ ubicacionesCarrier.size());
-            System.out.println("battleShip" + ubicacionesBattleShip.size());
-            System.out.println("submarine"+ ubicacionesSubmarine.size());
-            System.out.println("destroyer"+ ubicacionesDestroyer.size());
-            System.out.println("patrolboat"+ ubicacionesPatrolboat.size());
-*/
 
             dto.put("id", game.getId());
             dto.put("created", game.getCreationDate());
