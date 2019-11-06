@@ -137,19 +137,19 @@ public class SalvoController {
         //lista de ubicaciones de cada  barco del gamePlayer
 
         Ship barcoCarrier =  gamePlayer.getShips().stream()
-                .filter(ship -> ship.getType()=="carrier").findAny().orElse(null);
+                .filter(ship -> ship.getType().equalsIgnoreCase("carrier")).findAny().orElse(null);
 
         Ship barcoBattleship =  gamePlayer.getShips().stream()
-                .filter(ship -> ship.getType()=="battleship").findAny().orElse(null);
+                .filter(ship -> ship.getType().equalsIgnoreCase("battleship")).findAny().orElse(null);
 
         Ship barcoSubmarine =  gamePlayer.getShips().stream()
-                .filter(ship -> ship.getType()=="submarine").findAny().orElse(null);
+                .filter(ship -> ship.getType().equalsIgnoreCase("submarine")).findAny().orElse(null);
 
         Ship barcoDestroyer =  gamePlayer.getShips().stream()
-                .filter(ship -> ship.getType()=="destroyer").findAny().orElse(null);
+                .filter(ship -> ship.getType().equalsIgnoreCase("destroyer")).findAny().orElse(null);
 
         Ship barcoPatrolboat =  gamePlayer.getShips().stream()
-                .filter(ship -> ship.getType()=="patrolboat").findAny().orElse(null);
+                .filter(ship -> ship.getType().equalsIgnoreCase("patrolboat")).findAny().orElse(null);
 
         if(barcoCarrier!=null)
         { ubicacionesCarrier = barcoCarrier.getLocations();}
@@ -307,10 +307,11 @@ public class SalvoController {
                                 gameState="TIE";
                                 Score score= new Score(game, gamePlayer.getPlayer(),0.5);
 
-                                    scoreRepository.save(score);
+                                Score scoreEncontrado = scoreRepository.findAll().stream().filter(score1 -> score1.getGame()==score.getGame()&& score1.getPlayer()==score.getPlayer()).findAny().orElse(null);
 
+                                if(scoreEncontrado==null)
+                                { scoreRepository.save(score);}
                             }
-
                             else{
 
                                 if(estanHundidosLosBarcos(gamePlayerOponnent)==true){
@@ -318,14 +319,20 @@ public class SalvoController {
 
                                     Score score= new Score(game, gamePlayer.getPlayer(),1.0);
 
-                                        scoreRepository.save(score);
+                                    //no puede haber mas de un score con idgame y idplayer repetidos
+                                    Score scoreEncontrado = scoreRepository.findAll().stream().filter(score1 -> score1.getGame()==score.getGame()&& score1.getPlayer()==score.getPlayer()).findAny().orElse(null);
+
+                                    if(scoreEncontrado==null)
+                                    { scoreRepository.save(score);}
                                 }
 
                                 if(estanHundidosLosBarcos(gamePlayer)==true){
                                     gameState="LOST";
                                     Score score= new Score(game, gamePlayer.getPlayer(),0.0);
+                                    Score scoreEncontrado = scoreRepository.findAll().stream().filter(score1 -> score1.getGame()==score.getGame()&& score1.getPlayer()==score.getPlayer()).findAny().orElse(null);
 
-                                        scoreRepository.save(score);
+                                    if(scoreEncontrado==null)
+                                    { scoreRepository.save(score);}
                                 }
                             }
                         }
