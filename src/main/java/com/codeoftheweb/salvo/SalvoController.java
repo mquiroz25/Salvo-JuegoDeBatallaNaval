@@ -307,7 +307,7 @@ public class SalvoController {
                             if(estanHundidosLosBarcos(gamePlayer) == true && estanHundidosLosBarcos(gamePlayerOponnent) == true){
                                 gameState="TIE";
                                 Score score= new Score(game, gamePlayer.getPlayer(),0.5);
-                                if(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore())
+                                if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
 
                                 {
                                     scoreRepository.save(score);
@@ -321,7 +321,7 @@ public class SalvoController {
 
                                     Score score= new Score(game, gamePlayer.getPlayer(),1.0);
 
-                                    if(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore())
+                                    if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
 
                                     {
                                         scoreRepository.save(score);
@@ -332,14 +332,15 @@ public class SalvoController {
                                     gameState="LOST";
                                     Score score= new Score(game, gamePlayer.getPlayer(),0.0);
 
-                                    if(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore())
+
+
+                                    if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
 
                                     {
                                         scoreRepository.save(score);
                                     }
                                 }
                             }
-
                         }
 
                         if (gamePlayer.getSalvoes().size() > gamePlayerOponnent.getSalvoes().size())
