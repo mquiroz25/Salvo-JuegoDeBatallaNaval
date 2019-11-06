@@ -271,7 +271,6 @@ public class SalvoController {
 
             GamePlayer gamePlayerOponnent = getGamePlayerOponnet(gamePlayer);
 
-            Score ultimoScore = gamePlayer.getPlayer().getScores().stream().filter(score1 -> score1.getId()==gamePlayer.getPlayer().getScores().size()-1).findAny().orElse(null);
             //logica del juego
 
             if(gamePlayer.getShips().size()==0){
@@ -307,11 +306,9 @@ public class SalvoController {
                             if(estanHundidosLosBarcos(gamePlayer) == true && estanHundidosLosBarcos(gamePlayerOponnent) == true){
                                 gameState="TIE";
                                 Score score= new Score(game, gamePlayer.getPlayer(),0.5);
-                                if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
 
-                                {
                                     scoreRepository.save(score);
-                                }
+
                             }
 
                             else{
@@ -321,21 +318,14 @@ public class SalvoController {
 
                                     Score score= new Score(game, gamePlayer.getPlayer(),1.0);
 
-                                    if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
-
-                                    {
                                         scoreRepository.save(score);
-                                    }
                                 }
 
                                 if(estanHundidosLosBarcos(gamePlayer)==true){
                                     gameState="LOST";
                                     Score score= new Score(game, gamePlayer.getPlayer(),0.0);
 
-                                    if(ultimoScore==null ||(ultimoScore.getGame()!=score.getGame() && ultimoScore.getPlayer()!=score.getPlayer()&&ultimoScore.getScore()!=score.getScore() ))
-                                    {
                                         scoreRepository.save(score);
-                                    }
                                 }
                             }
                         }
